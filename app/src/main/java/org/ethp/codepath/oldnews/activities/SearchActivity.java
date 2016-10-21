@@ -48,6 +48,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 
 public class SearchActivity extends AppCompatActivity {
 
+    MenuItem miSearch;
     MenuItem miSearchProgress;
 
     @BindView(R.id.gvResults)
@@ -124,17 +125,13 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // Store instance of the menu item containing progress
         miSearchProgress = menu.findItem(R.id.miActionProgress);
-        // Extract the action-view from the menu item
-        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miSearchProgress);
-        // Return to finish
         return super.onPrepareOptionsMenu(menu);
     }
 
     private void setupSearchAction(Menu menu) {
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        miSearch = menu.findItem(R.id.action_search);
 
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(miSearch);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -185,7 +182,9 @@ public class SearchActivity extends AppCompatActivity {
             params.add("q", query);
         }
 
+        miSearch.collapseActionView();
         miSearchProgress.setVisible(true);
+
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -200,7 +199,7 @@ public class SearchActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e("NY_TIMES_API_GET", "Failed parsing response: " + e.getMessage(), e);
                 }
-                setVisible(false);
+                miSearchProgress.setVisible(false);
             }
 
             @Override
