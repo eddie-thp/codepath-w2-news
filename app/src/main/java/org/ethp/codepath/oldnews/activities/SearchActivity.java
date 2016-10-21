@@ -68,6 +68,8 @@ public class SearchActivity extends AppCompatActivity {
         setup();
 
         boolean isNetworkAvailable = isNetworkAvailable();
+
+        onArticleSearch();
     }
 
     private void setup() {
@@ -125,10 +127,12 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void onArticleSearch() {
+        onArticleSearch(null);
+    }
+
     public void onArticleSearch(View view) {
         String query = etQuery.getText().toString();
-//https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9c7e6b7d1d334c1fbf5cdd8d6dba16e7
-//https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=9c7e6b7d1d334c1fbf5cdd8d6dba16e7&q=query_to_search
 
         AsyncHttpClient client = new AsyncHttpClient();
 
@@ -177,18 +181,36 @@ public class SearchActivity extends AppCompatActivity {
                 }
 
                 // Setup sort param
-                if (sortBySelection == 0) {
+                String sortByValue = getResources().getStringArray(R.array.sort_by_api_values)[sortBySelection];
+                if (sortByValue.isEmpty()) {
                     params.remove("sort");
-                } else if (sortBySelection == 1) {
-                    params.put("sort", "newest");
-                } else if (sortBySelection == 2) {
-                    params.put("sort", "oldest");
+                } else {
+                    params.put("sort", sortByValue);
                 }
 
+                StringBuilder newsDeskValBuilder = new StringBuilder();
+                if (newsDeskArtsChecked) {
+                    newsDeskValBuilder.append('"').append("Arts").append("\" ");
+                }
+                if (newsDeskFashionChecked) {
+                    newsDeskValBuilder.append('"').append("Fashion & Style").append("\" ");
+                }
+                if (newsDeskSportsChecked) {
+                    newsDeskValBuilder.append('"').append("Sports").append("\" ");
+                }
+
+                String test = getResources().getStringArray(R.array.sort_by_api_values).toString();
+
                 // Setup news_desk param
+                String newsDeskVal = newsDeskValBuilder.toString();
+                if (newsDeskVal.isEmpty()) {
+                    params.remove("fq");
+                } else {
+                    params.put("fq", String.format("news_desk:(%s)", newsDeskVal));
+                }
 
                 // Execute search
-                SearchActivity.this.onArticleSearch(null);
+                SearchActivity.this.onArticleSearch();
 
             }
         });

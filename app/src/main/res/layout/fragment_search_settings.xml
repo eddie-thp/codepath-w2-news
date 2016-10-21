@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spnSortBy"
-        android:entries="@array/search_sorting_array"/>
+        android:entries="@array/sort_by_spinner_values"/>
 
     <TextView
         android:layout_width="match_parent"
