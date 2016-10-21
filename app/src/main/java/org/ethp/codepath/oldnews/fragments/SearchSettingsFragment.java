@@ -28,6 +28,9 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import static butterknife.ButterKnife.bind;
 
 public class SearchSettingsFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
@@ -45,6 +48,8 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
     Button btReset;
     @BindView(R.id.btApply)
     Button btApply;
+
+    private Unbinder unbinder;
 
     Date beginDate;
 
@@ -74,8 +79,16 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
         return view;
     }
 
+    // When binding a fragment in onCreateView, set the views to null in onDestroyView.
+    // ButterKnife returns an Unbinder on the initial binding that has an unbind method to do this automatically.
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
     private void setup(View view) {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         etBeginDate.setOnClickListener(new EditText.OnClickListener() {
             @Override

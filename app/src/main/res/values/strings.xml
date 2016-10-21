@@ -1,24 +1,24 @@
 <resources>
     <string name="app_name">Old News</string>
+    <!-- Toolbar menu -->
+    <string name="action_search">Search</string>
+    <string name="action_search_progress">Searching...</string>
     <string name="action_settings">Settings</string>
-    <string name="search_query_hint">Enter search query</string>
-    <string name="search_button">Search</string>
-    <string name="title_activity_article">ArticleActivity</string>
 
-    <!-- API string -->
-    <string name="api_date_format">yyyyMMdd</string>
+    <!-- Article details activity -->
+    <string name="title_activity_article">Article</string>
 
-    <!-- Dialog strings -->
+    <!-- Settings Dialog title -->
     <string name="title_settings_dialog">Article Search Settings</string>
-    <string name="search_sort">Sort by</string>
-    <string name="hint_begin_date">Search from date or later</string>
-    <string name="text_news_desk">News Desk</string>
     <string name="text_begin_date">Begin Date</string>
+    <string name="hint_begin_date">Search from date or later</string>
+    <string name="date_format">MM/dd/yyyy</string>
+    <string name="search_sort">Sort by</string>
+    <string name="text_news_desk">News Desk</string>
     <string name="cb_title_arts">Arts</string>
     <string name="cb_title_fashion" >Fashion &amp; Style</string>
     <string name="cb_title_sports">Sports</string>
     <string name="title_apply_button">Apply</string>
-    <string name="date_format">MM/dd/yyyy</string>
     <string name="title_reset_button">Reset</string>
 
 </resources>
