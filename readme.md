@@ -55,8 +55,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app:
 
-* Missed setting the layout manager when using the RecyclerView
-* EndlessScroll/Response from the API seems to be affecting performance
+* **RecyclerView**: Missed setting up the layout manager
 
 ## Open-source libraries used
 
