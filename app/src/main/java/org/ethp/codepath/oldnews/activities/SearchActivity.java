@@ -5,22 +5,17 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ProgressBar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -28,9 +23,10 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.ethp.codepath.oldnews.R;
-import org.ethp.codepath.oldnews.adapters.ArticleArrayAdapter;
+import org.ethp.codepath.oldnews.adapters.ArticleAdapter;
 import org.ethp.codepath.oldnews.fragments.SearchSettingsFragment;
 import org.ethp.codepath.oldnews.models.Article;
+import org.ethp.codepath.support.recyclerview.ItemClickSupport;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -43,19 +39,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-import static android.R.attr.x;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-
 public class SearchActivity extends AppCompatActivity {
 
     MenuItem miSearch;
     MenuItem miSearchProgress;
 
-    @BindView(R.id.gvResults)
-    GridView gvResults;
+    @BindView(R.id.rvArticles)
+    RecyclerView rvArticles;
 
     List<Article> articles;
-    ArticleArrayAdapter articlesAdapter;
+    ArticleAdapter articlesAdapter;
 
     // TODO remove from here
     RequestParams params;
@@ -81,12 +74,14 @@ public class SearchActivity extends AppCompatActivity {
     private void setup() {
         ButterKnife.bind(this);
         articles = new ArrayList<>();
-        articlesAdapter = new ArticleArrayAdapter(this, articles);
-        gvResults.setAdapter(articlesAdapter);
+        articlesAdapter = new ArticleAdapter(this, articles);
+        rvArticles.setAdapter(articlesAdapter);
+        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        rvArticles.setLayoutManager(gridLayoutManager);
 
-        gvResults.setOnItemClickListener(new GridView.OnItemClickListener() {
+        ItemClickSupport.addTo(rvArticles).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                 // Get article
                 Article article = articles.get(position);
                 // Create and setup intent
@@ -96,6 +91,7 @@ public class SearchActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
 
         // TODO remove this from here
         params = new RequestParams();
@@ -179,7 +175,7 @@ public class SearchActivity extends AppCompatActivity {
         if (query.isEmpty()) {
             params.remove("q");
         } else {
-            params.add("q", query);
+            params.put("q", query);
         }
 
         miSearch.collapseActionView();
@@ -188,14 +184,17 @@ public class SearchActivity extends AppCompatActivity {
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                int size = articles.size();
                 articles.clear();
+                if (size > 0) {
+                    articlesAdapter.notifyItemRangeRemoved(0, size);
+                }
+
                 JSONArray docs = null;
                 try {
                     docs = response.getJSONObject("response").getJSONArray("docs");
                     articles.addAll(Article.fromJSONArray(docs));
-                    // Note that this also adds the information to the list
-                    // articlesAdapter.addAll(Article.fromJSONArray(docs));
-                    articlesAdapter.notifyDataSetChanged();
+                    articlesAdapter.notifyItemRangeInserted(0, articles.size());
                 } catch (Exception e) {
                     Log.e("NY_TIMES_API_GET", "Failed parsing response: " + e.getMessage(), e);
                 }

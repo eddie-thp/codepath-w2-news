@@ -25,19 +25,23 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    // Etsy staggered grid library (using DynamicHeightImageView)
+    compile 'com.etsy.android.grid:library:1.0.5'
     // ButterKnife
     compile 'com.jakewharton:butterknife:8.2.1'
     // TODO remove
     compile 'com.loopj.android:android-async-http:1.4.9'
     // Picasso dependency
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
     // Gson Library
     compile 'com.google.code.gson:gson:2.6.2'
     // Retrofit
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    // Android Support
+    // Android Support Libraries
     compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:24.2.1'
     testCompile 'junit:junit:4.12'
