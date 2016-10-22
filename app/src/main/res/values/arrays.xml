@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Settings SortBy Spinner text values
+    -->
+    <string-array name="sort_by_spinner_values">
+        <item>Relevance</item>
+        <item>Most recent</item>
+        <item>Least recent</item>
+    </string-array>
+    <!--
+        Array containing the possible NY Times Articles API sorting values
+        accordingly to the spinner selection
+     -->
+    <string-array name="sort_by_api_values">
+        <item></item>
+        <item>newest</item>
+        <item>oldest</item>
+    </string-array>
+</resources>
