@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import org.ethp.codepath.oldnews.R;
 import org.ethp.codepath.oldnews.models.Article;
+import org.parceler.Parcels;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +31,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         setup();
 
-        Article article = (Article) getIntent().getSerializableExtra("article");
+        Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
         String url = article.getWebUrl();
         webView.loadUrl(url);
