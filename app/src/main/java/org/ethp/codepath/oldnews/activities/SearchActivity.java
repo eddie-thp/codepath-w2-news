@@ -41,6 +41,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.util.Log.i;
+
 public class SearchActivity extends AppCompatActivity {
 
     MenuItem miSearch;
@@ -217,6 +220,9 @@ public class SearchActivity extends AppCompatActivity {
         if (miSearchProgress != null) {
             miSearchProgress.setVisible(true);
         }
+
+        // Uncomment to verify the API calls
+        // Log.i("NY_TIMES_API_GET", "URL: " + AsyncHttpClient.getUrlWithQueryString(true, url, params));
 
         client.get(url, params, new JsonHttpResponseHandler() {
             @Override

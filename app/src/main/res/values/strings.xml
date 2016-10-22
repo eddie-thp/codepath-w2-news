@@ -7,6 +7,10 @@
 
     <!-- Article details activity -->
     <string name="title_activity_article">Article</string>
+    <string name="share_text">Hey, look this interesting New York times that I\'ve found !
+        Headline: %1$s
+        URL: %2$s
+Shared using "codepath.com" the week 2 OldNews assignment app.</string>
 
     <!-- Settings Dialog title -->
     <string name="title_settings_dialog">Article Search Settings</string>
