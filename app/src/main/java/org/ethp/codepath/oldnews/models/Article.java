@@ -5,32 +5,25 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-
 /**
- * Created by eddie_thp on 10/18/16.
+ * Article model implementation
  */
-
-public class Article implements Serializable {
+@Parcel
+public class Article {
     private String webUrl;
     private String headline;
     private String thumbnail;
 
-    public String getWebUrl() {
-        return webUrl;
-    }
+    /**
+     * Empty constructor required by the Parceler library
+     */
+    public Article() {
 
-    public String getHeadline() {
-        return headline;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
     }
 
     public Article(JSONObject obj) throws JSONException {
@@ -44,6 +37,18 @@ public class Article implements Serializable {
         } else {
             thumbnail = "";
         }
+    }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public String getHeadline() {
+        return headline;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
     }
 
     public static List<Article> fromJSONArray(JSONArray articlesJson) {

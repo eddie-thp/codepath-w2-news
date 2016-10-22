@@ -30,6 +30,7 @@ import org.ethp.codepath.support.recyclerview.EndlessRecyclerViewScrollListener;
 import org.ethp.codepath.support.recyclerview.ItemClickSupport;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class SearchActivity extends AppCompatActivity {
                 Article article = articles.get(position);
                 // Create and setup intent
                 Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
-                intent.putExtra("article", article);
+                intent.putExtra("article", Parcels.wrap(article));
                 // Launch the activity
                 startActivity(intent);
             }
