@@ -1,28 +1,25 @@
 package org.ethp.codepath.oldnews.adapters;
 
 import android.content.Context;
+import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
-import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import org.ethp.codepath.oldnews.R;
+import org.ethp.codepath.oldnews.databinding.ItemArticleResultBinding;
 import org.ethp.codepath.oldnews.models.Article;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static org.ethp.codepath.oldnews.R.id.ivImage;
 
 /**
  * Article RecyclerView Adapter class
@@ -33,14 +30,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
      * ViewHolder implementation
      */
     public class ViewHolder extends RecyclerView.ViewHolder implements Target, View.OnClickListener {
-        @BindView(ivImage)
-        DynamicHeightImageView ivThumbnail;
-        @BindView(R.id.tvTitle)
-        TextView tvHeadline;
+
+        ItemArticleResultBinding binding;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ItemArticleResultBinding.bind(itemView);
             itemView.setOnClickListener(this);
         }
 
@@ -62,8 +57,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-            ivThumbnail.setHeightRatio(ratio);
-            ivThumbnail.setImageBitmap(bitmap);
+            binding.ivImage.setHeightRatio(ratio);
+            binding.ivImage.setImageBitmap(bitmap);
         }
     }
 
@@ -115,20 +110,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
      */
     @Override
     public void onBindViewHolder(ArticleAdapter.ViewHolder viewHolder, int position) {
-
         Article article = mArticles.get(position);
 
-        viewHolder.tvHeadline.setText(article.getHeadline());
+        viewHolder.binding.setArticle(article);
+        viewHolder.binding.executePendingBindings();
+    }
 
-        // Cleanup thumbnail ImageView and use Picasso to load the new image
-        viewHolder.ivThumbnail.setImageResource(0);
-        String thumbnail = article.getThumbnail();
-        //viewHolder.ivThumbnail.setrat
-        if (!thumbnail.isEmpty()) {
-            Picasso.with(getContext())
-                    .load(thumbnail)
+    /**
+     * Loads the thumbnail using the data binding framework
+     * @param view
+     * @param url
+     */
+    @BindingAdapter({"bind:imageUrl"})
+    public static void loadThumbnail(ImageView view, String url) {
+        view.setImageResource(0);
+        if (!url.isEmpty()) {
+            Picasso.with(view.getContext())
+                    .load(url)
                     .transform(new RoundedCornersTransformation(5, 5))
-                    .into(viewHolder);
+                    .into(view);
         }
     }
 

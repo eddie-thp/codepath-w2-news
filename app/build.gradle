@@ -18,6 +18,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dataBinding.enabled = true
 }
 
 dependencies {
@@ -27,8 +28,6 @@ dependencies {
     })
     // Etsy staggered grid library (using DynamicHeightImageView)
     compile 'com.etsy.android.grid:library:1.0.5'
-    // ButterKnife
-    compile 'com.jakewharton:butterknife:8.2.1'
     // TODO remove
     compile 'com.loopj.android:android-async-http:1.4.9'
     // Picasso dependency

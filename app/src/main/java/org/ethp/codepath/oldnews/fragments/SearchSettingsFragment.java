@@ -3,53 +3,34 @@ package org.ethp.codepath.oldnews.fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.Spinner;
 
 import org.ethp.codepath.oldnews.R;
+import org.ethp.codepath.oldnews.databinding.FragmentSearchSettingsBinding;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-import static butterknife.ButterKnife.bind;
+import static org.ethp.codepath.oldnews.R.id.cbArts;
+import static org.ethp.codepath.oldnews.R.id.cbFashionStyle;
+import static org.ethp.codepath.oldnews.R.id.cbSports;
+import static org.ethp.codepath.oldnews.R.id.etBeginDate;
+import static org.ethp.codepath.oldnews.R.id.spnSortBy;
 
 public class SearchSettingsFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    @BindView(R.id.etBeginDate)
-    EditText etBeginDate;
-    @BindView(R.id.spnSortBy)
-    Spinner spnSortBy;
-    @BindView(R.id.cbArts)
-    CheckBox cbArts;
-    @BindView(R.id.cbFashionStyle)
-    CheckBox cbFashionStyle;
-    @BindView(R.id.cbSports)
-    CheckBox cbSports;
-    @BindView(R.id.btReset)
-    Button btReset;
-    @BindView(R.id.btApply)
-    Button btApply;
-
-    private Unbinder unbinder;
+    FragmentSearchSettingsBinding binding;
 
     Date beginDate;
 
@@ -74,23 +55,13 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_settings, container, false);
-        setup(view);
-        return view;
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search_settings, container, false);
+        setup();
+        return binding.getRoot();
     }
 
-    // When binding a fragment in onCreateView, set the views to null in onDestroyView.
-    // ButterKnife returns an Unbinder on the initial binding that has an unbind method to do this automatically.
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    private void setup(View view) {
-        unbinder = ButterKnife.bind(this, view);
-
-        etBeginDate.setOnClickListener(new EditText.OnClickListener() {
+    private void setup() {
+        binding.etBeginDate.setOnClickListener(new EditText.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getFragmentManager();
@@ -108,20 +79,20 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
             }
         });
 
-        btReset.setOnClickListener(new Button.OnClickListener() {
+        binding.btReset.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 beginDate = null;
-                etBeginDate.setText("");
-                spnSortBy.setSelection(0);
-                cbArts.setChecked(false);
-                cbFashionStyle.setChecked(false);
-                cbSports.setChecked(false);
+                binding.etBeginDate.setText("");
+                binding.spnSortBy.setSelection(0);
+                binding.cbArts.setChecked(false);
+                binding.cbFashionStyle.setChecked(false);
+                binding.cbSports.setChecked(false);
             }
         });
 
         // Setup apply button to pass the dialog values to the listener
-        btApply.setOnClickListener(new Button.OnClickListener() {
+        binding.btApply.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Activity activity = getActivity();
@@ -135,10 +106,10 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
 
                 if (listener != null) {
                     listener.onApplyClicked(beginDate,
-                            spnSortBy.getSelectedItemPosition(),
-                            cbArts.isChecked(),
-                            cbFashionStyle.isChecked(),
-                            cbSports.isChecked());
+                            binding.spnSortBy.getSelectedItemPosition(),
+                            binding.cbArts.isChecked(),
+                            binding.cbFashionStyle.isChecked(),
+                            binding.cbSports.isChecked());
                 } else {
                     // TODO should I log or throw an exception ?
                 }
@@ -161,7 +132,7 @@ public class SearchSettingsFragment extends DialogFragment implements DatePicker
         cal.set(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         beginDate = cal.getTime();
-        etBeginDate.setText(new SimpleDateFormat(getString(R.string.date_format)).format(beginDate));
+        binding.etBeginDate.setText(new SimpleDateFormat(getString(R.string.date_format)).format(beginDate));
     }
 
 

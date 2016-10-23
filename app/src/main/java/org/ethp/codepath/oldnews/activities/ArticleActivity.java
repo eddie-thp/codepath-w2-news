@@ -1,32 +1,26 @@
 package org.ethp.codepath.oldnews.activities;
 
 import android.content.Intent;
+import android.databinding.BindingAdapter;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 
 import org.ethp.codepath.oldnews.R;
+import org.ethp.codepath.oldnews.databinding.ContentArticleBinding;
 import org.ethp.codepath.oldnews.models.Article;
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ArticleActivity extends AppCompatActivity {
 
-    @BindView(R.id.wvArticle)
-    WebView webView;
+    ContentArticleBinding binding;
 
     private Article mArticle;
 
@@ -34,12 +28,13 @@ public class ArticleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article);
+
+        binding = ContentArticleBinding.bind(findViewById(R.id.content_article));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         setup();
-
-        loadArticle();
     }
 
     @Override
@@ -54,13 +49,11 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        ButterKnife.bind(this);
-
-        // Retrieve article extra
         mArticle = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
+        binding.setArticle(mArticle);
 
         // Setup webView
-        webView.setWebViewClient(new WebViewClient() {
+        binding.wvArticle.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // TODO why and how to fix the deprecated call ?
@@ -86,13 +79,13 @@ public class ArticleActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads the article into the WebView and setups the share intent
-     * @param article
+     * Loads the WebView article URL using the data binding framework
+     * @param view
+     * @param url
      */
-    private void loadArticle()
-    {
-        String url = mArticle.getWebUrl();
-        webView.loadUrl(url);
+    @BindingAdapter({"bind:articleUrl"})
+    public static void loadArticleURL(WebView view, String url) {
+        view.loadUrl(url);
     }
 
 }

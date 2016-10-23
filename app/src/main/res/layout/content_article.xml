@@ -1,21 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_article"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="0dp"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="org.ethp.codepath.oldnews.activities.ArticleActivity"
-    tools:showIn="@layout/activity_article">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable name="article" type="org.ethp.codepath.oldnews.models.Article"/>
+    </data>
 
-    <WebView
+    <RelativeLayout
+        android:id="@+id/content_article"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/wvArticle"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-</RelativeLayout>
+        android:padding="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="org.ethp.codepath.oldnews.activities.ArticleActivity"
+        tools:showIn="@layout/activity_article">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/wvArticle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            app:articleUrl="@{article.webUrl}"
+            />
+
+    </RelativeLayout>
+</layout>

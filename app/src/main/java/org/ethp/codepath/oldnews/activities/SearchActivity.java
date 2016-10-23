@@ -24,6 +24,7 @@ import com.loopj.android.http.RequestParams;
 
 import org.ethp.codepath.oldnews.R;
 import org.ethp.codepath.oldnews.adapters.ArticleAdapter;
+import org.ethp.codepath.oldnews.databinding.ContentSearchBinding;
 import org.ethp.codepath.oldnews.fragments.SearchSettingsFragment;
 import org.ethp.codepath.oldnews.models.Article;
 import org.ethp.codepath.support.recyclerview.EndlessRecyclerViewScrollListener;
@@ -37,20 +38,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static android.util.Log.i;
+import static org.ethp.codepath.oldnews.R.id.rvArticles;
+import static org.ethp.codepath.oldnews.R.id.toolbar;
 
 public class SearchActivity extends AppCompatActivity {
 
+    ContentSearchBinding binding;
+    RecyclerView rvArticles;
+
     MenuItem miSearch;
     MenuItem miSearchProgress;
-
-    @BindView(R.id.rvArticles)
-    RecyclerView rvArticles;
 
     List<Article> articles;
     ArticleAdapter articlesAdapter;
@@ -62,6 +61,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        binding = ContentSearchBinding.bind(findViewById(R.id.content_search));
+        rvArticles = binding.rvArticles;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,7 +77,6 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setup() {
-        ButterKnife.bind(this);
         articles = new ArrayList<>();
         articlesAdapter = new ArticleAdapter(this, articles);
         rvArticles.setAdapter(articlesAdapter);

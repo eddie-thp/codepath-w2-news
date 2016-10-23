@@ -1,84 +1,87 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp"
-    tools:context="org.ethp.codepath.oldnews.fragments.SearchSettingsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvBeginDate"
-        android:text="@string/text_begin_date" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:id="@+id/etBeginDate"
-        android:hint="@string/hint_begin_date"
-        android:focusable="false" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:id="@+id/tvSortBy"
-        android:text="@string/search_sort" />
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/spnSortBy"
-        android:entries="@array/sort_by_spinner_values"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:id="@+id/etNewsDesk"
-        android:text="@string/text_news_desk" />
-
-    <CheckBox
-        android:text="@string/cb_title_arts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbArts" />
-
-    <CheckBox
-        android:text="@string/cb_title_fashion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbFashionStyle" />
-
-    <CheckBox
-        android:text="@string/cb_title_sports"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/cbSports" />
-
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:orientation="horizontal">
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:context="org.ethp.codepath.oldnews.fragments.SearchSettingsFragment">
 
-        <Button
-            android:text="@string/title_reset_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btReset" />
+        <!-- TODO: Update blank fragment layout -->
 
-        <Button
-            android:text="@string/title_apply_button"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btApply" />
+            android:id="@+id/tvBeginDate"
+            android:text="@string/text_begin_date" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:id="@+id/etBeginDate"
+            android:hint="@string/hint_begin_date"
+            android:focusable="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:id="@+id/tvSortBy"
+            android:text="@string/search_sort" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/spnSortBy"
+            android:entries="@array/sort_by_spinner_values"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:id="@+id/etNewsDesk"
+            android:text="@string/text_news_desk" />
+
+        <CheckBox
+            android:text="@string/cb_title_arts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbArts" />
+
+        <CheckBox
+            android:text="@string/cb_title_fashion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbFashionStyle" />
+
+        <CheckBox
+            android:text="@string/cb_title_sports"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cbSports" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:text="@string/title_reset_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btReset" />
+
+            <Button
+                android:text="@string/title_apply_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btApply" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</layout>
