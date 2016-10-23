@@ -3,15 +3,18 @@ package org.ethp.codepath.oldnews.adapters;
 import android.content.Context;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.etsy.android.grid.util.DynamicHeightImageView;
 
 import org.ethp.codepath.oldnews.R;
 import org.ethp.codepath.oldnews.databinding.ItemArticleResultBinding;
@@ -19,7 +22,7 @@ import org.ethp.codepath.oldnews.models.Article;
 
 import java.util.List;
 
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Article RecyclerView Adapter class
@@ -29,7 +32,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     /**
      * ViewHolder implementation
      */
-    public class ViewHolder extends RecyclerView.ViewHolder implements Target, View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ItemArticleResultBinding binding;
 
@@ -42,23 +45,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         @Override
         public void onClick(View v) {
 
-        }
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {
-
-        }
-
-        @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
-            binding.ivImage.setHeightRatio(ratio);
-            binding.ivImage.setImageBitmap(bitmap);
         }
     }
 
@@ -123,12 +109,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
      */
     @BindingAdapter({"bind:imageUrl"})
     public static void loadThumbnail(ImageView view, String url) {
+        final ImageView finalView = view;
+        ((DynamicHeightImageView) view).setHeightRatio(0);
         view.setImageResource(0);
+
         if (!url.isEmpty()) {
-            Picasso.with(view.getContext())
-                    .load(url)
-                    .transform(new RoundedCornersTransformation(5, 5))
-                    .into(view);
+            Context ctx = view.getContext();
+            Glide.with(ctx)
+                    .load(url).bitmapTransform(new RoundedCornersTransformation(ctx, 5, 5))
+                    .into(new SimpleTarget<GlideDrawable>() {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                            GlideBitmapDrawable glideBitmapDrawable = ((GlideBitmapDrawable) resource);
+                            Bitmap bitmap = glideBitmapDrawable.getBitmap();
+                            float ratio = (float) bitmap.getHeight() / (float) bitmap.getWidth();
+                            ((DynamicHeightImageView) finalView).setHeightRatio(ratio);
+                            finalView.setImageBitmap(bitmap);
+                        }
+                    });
+
         }
     }
 
@@ -140,6 +139,5 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     public int getItemCount() {
         return mArticles.size();
     }
-
 
 }

@@ -15,9 +15,9 @@ import java.util.List;
  */
 @Parcel
 public class Article {
-    private String webUrl;
-    private String headline;
-    private String thumbnail;
+    String webUrl;
+    String headline;
+    String thumbnail;
 
     /**
      * Empty constructor required by the Parceler library
