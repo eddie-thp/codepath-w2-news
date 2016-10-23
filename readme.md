@@ -33,7 +33,7 @@ The following **bonus** features are implemented:
 * [x] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
 * [x] Leverages the [data binding support module](http://guides.codepath.com/android/Applying-Data-Binding-for-Views) to bind data into layout templates.
 * [ ] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
-* [ ] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
+* [x] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 * [ ] Uses [retrolambda expressions](http://guides.codepath.com/android/Lambda-Expressions) to cleanup event handling blocks.
 * [ ] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
 * [ ] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
@@ -55,11 +55,12 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app:
 
-* **RecyclerView**: Missed setting up the layout manager
+* **RecyclerView**: Missed setting up the layout manager, items were not being rendered
 * **DataBinding**: It was tricky working with it
-    * Binding classes would only get generated after rebuilding the app
-    * Same with cases where I had to use the BindAdapter annotation
+    * Binding classes, which are created based on the data tag, would only be generated after rebuilding the app
+    * Same with cases where I had to use the BindAdapter annotation, which drives the XML app tag
     * I may be missing 2 way binding, I still need to improve my settings fragment so that I can have a better model.
+* **Glide** I had a bit of trouble with glide, maybe because I am using a DynamicHeightImageView, for some reason images wouldn't be rendered at all, I finally figure out how to use a SimpleTarget to do it. But I do not know if it's correct.
 
 ## Open-source libraries used
 
