@@ -5,6 +5,12 @@
     <string name="action_search_progress">Searching...</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Error messages -->
+    <string name="error_fetch_results_failure">Failed to fetch articles.</string>
+    <string name="error_connectivity_failure">No Connection, check your settings.</string>
+    <string name="action_retry">Retry</string>
+
+
     <!-- Article details activity -->
     <string name="title_activity_article">Article</string>
     <string name="share_text">Hey, look this interesting New York times that I\'ve found !

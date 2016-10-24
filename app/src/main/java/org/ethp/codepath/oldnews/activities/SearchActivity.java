@@ -1,9 +1,6 @@
 package org.ethp.codepath.oldnews.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +23,7 @@ import org.ethp.codepath.oldnews.fragments.SearchSettingsFragment;
 import org.ethp.codepath.oldnews.models.Article;
 import org.ethp.codepath.oldnews.models.ArticleSearchParameters;
 import org.ethp.codepath.oldnews.models.Response;
+import org.ethp.codepath.support.network.ConnectivityHelper;
 import org.ethp.codepath.support.recyclerview.EndlessRecyclerViewScrollListener;
 import org.ethp.codepath.support.recyclerview.ItemClickSupport;
 import org.parceler.Parcels;
@@ -62,8 +60,6 @@ public class SearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setup();
-
-        boolean isNetworkAvailable = isNetworkAvailable();
 
         // Fetch articles
         fetchArticles(0);
@@ -108,13 +104,6 @@ public class SearchActivity extends AppCompatActivity {
                 fetchArticles(page);
             }
         });
-    }
-
-    private Boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -189,7 +178,7 @@ public class SearchActivity extends AppCompatActivity {
      * fetch page used by endless scroll
      * @param page
      */
-    public void fetchArticles(int page) {
+    public void fetchArticles(final int page) {
         // Clear articles if querying 1st page
         if (page == 0) {
             int size = articles.size();
@@ -221,19 +210,49 @@ public class SearchActivity extends AppCompatActivity {
                     articlesAdapter.notifyItemRangeInserted(insertAt, articlesToLoad.size());
                     miSearchProgress.setVisible(false);
                 } else {
-                    // TODO recover from the problem
                     miSearchProgress.setVisible(false);
-                    Toast.makeText(SearchActivity.this, " FAILURE !!! ", Toast.LENGTH_LONG).show();
-                    //Snackbar.make(, "Failure !!!", Snackbar.LENGTH_INDEFINITE);
+                    handleFetchFailure(page, statusCode);
                 }
             }
 
             @Override
             public void onFailure(Call<Response> call, Throwable t) {
-                // TODO handle failure
-                miSearchProgress.setVisible(false);
+                handleFetchFailure(page);
+
             }
         });
+    }
+
+    private void handleFetchFailure(final int page) {
+        handleFetchFailure(page, null);
+    }
+
+    private void handleFetchFailure(final int page, Integer statusCode) {
+        // Hide progress
+        miSearchProgress.setVisible(false);
+
+        String errorMessage = getString(R.string.error_fetch_results_failure);
+
+        // Verify connectivity
+        if (statusCode == null)
+        {
+            // If we have a status code it means we received a response
+            // If we don't receive a response, lets check the connectivity
+            if (!ConnectivityHelper.isNetworkAvailableAndOnline(this))
+            {
+                errorMessage = getString(R.string.error_connectivity_failure);
+            }
+        }
+
+        // Show SnackBar
+        View parentLayout = findViewById(R.id.content_search);
+        Snackbar.make(parentLayout, errorMessage, Snackbar.LENGTH_INDEFINITE)
+                .setAction(getString(R.string.action_retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SearchActivity.this.fetchArticles(page);
+                    }
+                }).show();
     }
 
     public void onSettingsAction(MenuItem menuItem) {
