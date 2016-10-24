@@ -2,7 +2,6 @@ package org.ethp.codepath.oldnews.activities;
 
 import android.content.Intent;
 import android.databinding.BindingAdapter;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -83,7 +82,7 @@ public class ArticleActivity extends AppCompatActivity {
      * @param view
      * @param url
      */
-    @BindingAdapter({"bind:articleUrl"})
+    @BindingAdapter({"articleUrl"})
     public static void loadArticleURL(WebView view, String url) {
         view.loadUrl(url);
     }

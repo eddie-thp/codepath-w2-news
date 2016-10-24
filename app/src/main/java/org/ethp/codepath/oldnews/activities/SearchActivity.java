@@ -18,19 +18,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.ethp.codepath.oldnews.R;
 import org.ethp.codepath.oldnews.adapters.ArticleAdapter;
 import org.ethp.codepath.oldnews.databinding.ContentSearchBinding;
 import org.ethp.codepath.oldnews.fragments.SearchSettingsFragment;
 import org.ethp.codepath.oldnews.models.Article;
+import org.ethp.codepath.oldnews.models.Response;
 import org.ethp.codepath.support.recyclerview.EndlessRecyclerViewScrollListener;
 import org.ethp.codepath.support.recyclerview.ItemClickSupport;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.text.SimpleDateFormat;
@@ -39,9 +40,6 @@ import java.util.Date;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
-
-import static org.ethp.codepath.oldnews.R.id.rvArticles;
-import static org.ethp.codepath.oldnews.R.id.toolbar;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -222,27 +220,27 @@ public class SearchActivity extends AppCompatActivity {
             miSearchProgress.setVisible(true);
         }
 
-        // Uncomment to verify the API calls
-        // Log.i("NY_TIMES_API_GET", "URL: " + AsyncHttpClient.getUrlWithQueryString(true, url, params));
+        // Verifying the API calls
+        Log.d("NY_TIMES_API_GET", "URL: " + AsyncHttpClient.getUrlWithQueryString(true, url, params));
 
-        client.get(url, params, new JsonHttpResponseHandler() {
+        //
+
+        client.get(url, params, new TextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                JSONArray docs = null;
-                try {
-                    docs = response.getJSONObject("response").getJSONArray("docs");
-                    int insertAt = articles.size();
-                    articles.addAll(Article.fromJSONArray(docs));
-                    articlesAdapter.notifyItemRangeInserted(insertAt, articles.size());
-                } catch (Exception e) {
-                    Log.e("NY_TIMES_API_GET", "Failed parsing response: " + e.getMessage(), e);
-                }
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Gson gson = new GsonBuilder().create();
+                Response response = gson.fromJson(responseString, Response.class);
+                List<Article> responseArticles = response.getArticles();
+                int insertAt = articles.size();
+                articles.addAll(responseArticles);
+                articlesAdapter.notifyItemRangeInserted(insertAt, responseArticles.size());
                 miSearchProgress.setVisible(false);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                setVisible(false);
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                // TODO handle failure
+                miSearchProgress.setVisible(false);
             }
         });
     }

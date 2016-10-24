@@ -107,7 +107,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
      * @param view
      * @param url
      */
-    @BindingAdapter({"bind:imageUrl"})
+    @BindingAdapter({"imageUrl"})
     public static void loadThumbnail(ImageView view, String url) {
         final ImageView finalView = view;
         ((DynamicHeightImageView) view).setHeightRatio(0);
