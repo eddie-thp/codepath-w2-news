@@ -2,7 +2,7 @@
 
 **Old News** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **10** hours spent in total
+Time spent: **14** hours spent in total
 
 ## User Stories
 
@@ -35,7 +35,7 @@ The following **bonus** features are implemented:
 * [ ] Replace all icon drawables and other static image assets with [vector drawables](http://guides.codepath.com/android/Drawables#vector-drawables) where appropriate.
 * [x] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 * [ ] Uses [retrolambda expressions](http://guides.codepath.com/android/Lambda-Expressions) to cleanup event handling blocks.
-* [ ] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
+* [x] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
 * [ ] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
 * [ ] Replace the embedded `WebView` with [Chrome Custom Tabs](http://guides.codepath.com/android/Chrome-Custom-Tabs) using a custom action button for sharing. (_**2 points**_)
 
@@ -59,8 +59,9 @@ Describe any challenges encountered while building the app:
 * **DataBinding**: It was tricky working with it
     * Binding classes, which are created based on the data tag, would only be generated after rebuilding the app
     * Same with cases where I had to use the BindAdapter annotation, which drives the XML app tag
-    * I may be missing 2 way binding, I still need to improve my settings fragment so that I can have a better model.
-* **Glide** I had a bit of trouble with glide, maybe because I am using a DynamicHeightImageView, for some reason images wouldn't be rendered at all, I finally figure out how to use a SimpleTarget to do it. But I do not know if it's correct.
+    * I may be missing 2 way binding, I still need to improve my settings fragment so that I can better use data-binding with the settings fragment.
+* **Glide** I had a bit of trouble with glide, maybe because I am using a DynamicHeightImageView, for some reason images wouldn't be rendered at all, I finally figure out how to use a SimpleTarget to do it. But I do not know if it's the most correct way of implementing it.
+* **Gson** While modifying the model I forgot to make other/new models parcelable with the use of the @Parcels annotation, that caused problems to the data-binding framework - it stopped generating the binding classes
 
 ## Open-source libraries used
 

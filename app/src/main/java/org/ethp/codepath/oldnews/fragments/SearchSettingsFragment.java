@@ -22,12 +22,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.ethp.codepath.oldnews.R.id.cbArts;
-import static org.ethp.codepath.oldnews.R.id.cbFashionStyle;
-import static org.ethp.codepath.oldnews.R.id.cbSports;
-import static org.ethp.codepath.oldnews.R.id.etBeginDate;
-import static org.ethp.codepath.oldnews.R.id.spnSortBy;
-
 public class SearchSettingsFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     FragmentSearchSettingsBinding binding;

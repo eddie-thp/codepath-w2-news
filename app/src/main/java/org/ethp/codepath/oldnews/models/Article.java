@@ -1,6 +1,9 @@
 package org.ethp.codepath.oldnews.models;
 
+import android.graphics.Movie;
 import android.util.Log;
+
+import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,33 +13,28 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.thumbnail;
+import static android.media.CamcorderProfile.get;
+
 /**
  * Article model implementation
  */
 @Parcel
 public class Article {
+
+    Headline headline;
+
+    @SerializedName("web_url")
     String webUrl;
-    String headline;
-    String thumbnail;
+
+    @SerializedName("multimedia")
+    List<Multimedia> thumbnails;
 
     /**
      * Empty constructor required by the Parceler library
      */
     public Article() {
-
-    }
-
-    public Article(JSONObject obj) throws JSONException {
-        webUrl = obj.getString("web_url");
-        headline = obj.getJSONObject("headline").getString("main");
-        JSONArray multimedia = obj.getJSONArray("multimedia");
-        if (multimedia.length() > 0)
-        {
-            thumbnail = "https://www.nytimes.com/" + multimedia.getJSONObject(0).getString("url");
-
-        } else {
-            thumbnail = "";
-        }
+        thumbnails = new ArrayList<Multimedia>();
     }
 
     public String getWebUrl() {
@@ -44,24 +42,15 @@ public class Article {
     }
 
     public String getHeadline() {
-        return headline;
+        return headline.main;
     }
 
     public String getThumbnail() {
+        String thumbnail = "";
+        if (thumbnails.size() > 0) {
+            thumbnail = "https://www.nytimes.com/" + thumbnails.get(0).url;
+        }
         return thumbnail;
     }
 
-    public static List<Article> fromJSONArray(JSONArray articlesJson) {
-        List<Article> articles = new ArrayList<>();
-
-        for(int i = 0; i < articlesJson.length(); i++) {
-            try {
-                articles.add( new Article(articlesJson.getJSONObject(i)));
-            } catch (JSONException e) {
-                Log.e("ARTICLE_PARSING", "Failed parsing article json " + e.getMessage(), e);
-            }
-        }
-
-        return articles;
-    }
 }
