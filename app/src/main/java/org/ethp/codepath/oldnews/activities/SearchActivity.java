@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,34 +13,29 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
-
 import org.ethp.codepath.oldnews.R;
 import org.ethp.codepath.oldnews.adapters.ArticleAdapter;
+import org.ethp.codepath.oldnews.api.ArticlesApi;
 import org.ethp.codepath.oldnews.databinding.ContentSearchBinding;
 import org.ethp.codepath.oldnews.fragments.SearchSettingsFragment;
 import org.ethp.codepath.oldnews.models.Article;
+import org.ethp.codepath.oldnews.models.ArticleSearchParameters;
 import org.ethp.codepath.oldnews.models.Response;
 import org.ethp.codepath.support.recyclerview.EndlessRecyclerViewScrollListener;
 import org.ethp.codepath.support.recyclerview.ItemClickSupport;
 import org.parceler.Parcels;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -52,8 +48,7 @@ public class SearchActivity extends AppCompatActivity {
     List<Article> articles;
     ArticleAdapter articlesAdapter;
 
-    // TODO remove from here
-    RequestParams params;
+    private ArticleSearchParameters searchParameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +70,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void setup() {
+        // Setup Articles Recycler View
         articles = new ArrayList<>();
         articlesAdapter = new ArticleAdapter(this, articles);
+        // Setup click support
+        setupRecyclerView();
+        // Create object to store the search parameter
+        searchParameters = new ArticleSearchParameters();
+    }
+
+    private void setupRecyclerView() {
+        // Set the adapter
         rvArticles.setAdapter(articlesAdapter);
+        // Set the layout manager
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         rvArticles.setLayoutManager(gridLayoutManager);
         // Add click support
@@ -94,7 +99,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         // Add endless scroll support
-        // Add the scroll listener
         rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -102,16 +106,8 @@ public class SearchActivity extends AppCompatActivity {
                 // Add whatever code is needed to append new items to the bottom of the list
                 // customLoadMoreDataFromApi(page);
                 fetchArticles(page);
-
             }
         });
-
-
-        // TODO remove this from here
-        params = new RequestParams();
-        params.put("api-key", "9c7e6b7d1d334c1fbf5cdd8d6dba16e7");
-        params.put("page", "0");
-
     }
 
     private Boolean isNetworkAvailable() {
@@ -123,11 +119,9 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
-
+        // Setup the search action
         setupSearchAction(menu);
-
         return true;
     }
 
@@ -182,20 +176,10 @@ public class SearchActivity extends AppCompatActivity {
      * @param query
      */
     public void fetchArticles(String query) {
-        if (query.isEmpty()) {
-            params.remove("q");
-        } else {
-            params.put("q", query);
-        }
+        searchParameters.setQuery(query);
 
         if (!query.isEmpty()) {
             Toast.makeText(this, "Searching: " + query, Toast.LENGTH_LONG).show();
-        }
-
-        int size = articles.size();
-        articles.clear();
-        if (size > 0) {
-            articlesAdapter.notifyItemRangeRemoved(0, size);
         }
 
         fetchArticles(0);
@@ -206,13 +190,16 @@ public class SearchActivity extends AppCompatActivity {
      * @param page
      */
     public void fetchArticles(int page) {
-        AsyncHttpClient client = new AsyncHttpClient();
+        // Clear articles if querying 1st page
+        if (page == 0) {
+            int size = articles.size();
+            articles.clear();
+            if (size > 0) {
+                articlesAdapter.notifyItemRangeRemoved(0, size);
+            }
+        }
 
-        String url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-
-        params.put("page", page);
-
-        // miSearch won't be there during the startup call
+        // miSearch won't be there during the onCreate call
         if (miSearch != null) {
             miSearch.collapseActionView();
         }
@@ -220,25 +207,29 @@ public class SearchActivity extends AppCompatActivity {
             miSearchProgress.setVisible(true);
         }
 
-        // Verifying the API calls
-        Log.d("NY_TIMES_API_GET", "URL: " + AsyncHttpClient.getUrlWithQueryString(true, url, params));
-
-        //
-
-        client.get(url, params, new TextHttpResponseHandler() {
+        // Execute API request
+        ArticlesApi articlesApi = new ArticlesApi(this);
+        articlesApi.getArticles(page, searchParameters, new Callback<Response>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Gson gson = new GsonBuilder().create();
-                Response response = gson.fromJson(responseString, Response.class);
-                List<Article> responseArticles = response.getArticles();
-                int insertAt = articles.size();
-                articles.addAll(responseArticles);
-                articlesAdapter.notifyItemRangeInserted(insertAt, responseArticles.size());
-                miSearchProgress.setVisible(false);
+            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                int statusCode = response.code();
+                Response articlesResponse = response.body();
+                if (articlesResponse != null) {
+                    List<Article> articlesToLoad = articlesResponse.getArticles();
+                    int insertAt = articles.size();
+                    articles.addAll(articlesToLoad);
+                    articlesAdapter.notifyItemRangeInserted(insertAt, articlesToLoad.size());
+                    miSearchProgress.setVisible(false);
+                } else {
+                    // TODO recover from the problem
+                    miSearchProgress.setVisible(false);
+                    Toast.makeText(SearchActivity.this, " FAILURE !!! ", Toast.LENGTH_LONG).show();
+                    //Snackbar.make(, "Failure !!!", Snackbar.LENGTH_INDEFINITE);
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            public void onFailure(Call<Response> call, Throwable t) {
                 // TODO handle failure
                 miSearchProgress.setVisible(false);
             }
@@ -252,51 +243,16 @@ public class SearchActivity extends AppCompatActivity {
         searchSettingsFragment.setOnApplyClickedListener(new SearchSettingsFragment.OnApplyClickedListener() {
             @Override
             public void onApplyClicked(Date beginDate, int sortBySelection, boolean newsDeskArtsChecked, boolean newsDeskFashionChecked, boolean newsDeskSportsChecked) {
-                // Setup begin date param
-                if (beginDate == null) {
-                    params.remove("begin_date");
-                } else {
-                    String beginDateStr = new SimpleDateFormat("yyyyMMdd").format(beginDate);
-                }
-
-                // Setup sort param
-                String sortByValue = getResources().getStringArray(R.array.sort_by_api_values)[sortBySelection];
-                if (sortByValue.isEmpty()) {
-                    params.remove("sort");
-                } else {
-                    params.put("sort", sortByValue);
-                }
-
-                StringBuilder newsDeskValBuilder = new StringBuilder();
-                if (newsDeskArtsChecked) {
-                    newsDeskValBuilder.append('"').append("Arts").append("\" ");
-                }
-                if (newsDeskFashionChecked) {
-                    newsDeskValBuilder.append('"').append("Fashion & Style").append("\" ");
-                }
-                if (newsDeskSportsChecked) {
-                    newsDeskValBuilder.append('"').append("Sports").append("\" ");
-                }
-
-                String test = getResources().getStringArray(R.array.sort_by_api_values).toString();
-
-                // Setup news_desk param
-                String newsDeskVal = newsDeskValBuilder.toString();
-                if (newsDeskVal.isEmpty()) {
-                    params.remove("fq");
-                } else {
-                    params.put("fq", String.format("news_desk:(%s)", newsDeskVal));
-                }
-
-                int size = articles.size();
-                articles.clear();
-                if (size > 0) {
-                    articlesAdapter.notifyItemRangeRemoved(0, size);
-                }
+                // Update parameters and execute search
+                searchParameters.setBeginDate(beginDate);
+                searchParameters.setSortBy(getResources()
+                        .getStringArray(R.array.sort_by_api_values)[sortBySelection]);
+                searchParameters.setArtsChecked(newsDeskArtsChecked);
+                searchParameters.setFashionAndStyleChecked(newsDeskFashionChecked);
+                searchParameters.setSportsChecked(newsDeskSportsChecked);
 
                 // Execute search
                 SearchActivity.this.fetchArticles(0);
-
             }
         });
 
