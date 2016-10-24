@@ -2,7 +2,23 @@
 
 **Old News** is an android app that allows a user to search for articles on web using simple filters. The app utilizes [New York Times Search API](http://developer.nytimes.com/docs/read/article_search_api_v2).
 
-Time spent: **14** hours spent in total
+Time spent: **14+** hours spent in total
+
+
+**IMPORTANT:**
+In order to use the application, developer needs to create a secrets.xml file accordingly to the["Secrets in resource files" codepath.com guide](http://guides.codepath.com/android/Storing-Secret-Keys-in-Android#secrets-in-resource-files) and store the following keys:
+
+* **api_key_ny_times** : [The New York Times API](http://developer.nytimes.com/) Key
+
+**secrets.xml** sample:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_key_ny_times"> </string>
+</resources>
+```
+
 
 ## User Stories
 
@@ -36,7 +52,7 @@ The following **bonus** features are implemented:
 * [x] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 * [ ] Uses [retrolambda expressions](http://guides.codepath.com/android/Lambda-Expressions) to cleanup event handling blocks.
 * [x] Leverages the popular [GSON library](http://guides.codepath.com/android/Using-Android-Async-Http-Client#decoding-with-gson-library) to streamline the parsing of JSON data.
-* [ ] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
+* [x] Leverages the [Retrofit networking library](http://guides.codepath.com/android/Consuming-APIs-with-Retrofit) to access the New York Times API.
 * [ ] Replace the embedded `WebView` with [Chrome Custom Tabs](http://guides.codepath.com/android/Chrome-Custom-Tabs) using a custom action button for sharing. (_**2 points**_)
 
 The following **additional** features are implemented:
@@ -65,8 +81,11 @@ Describe any challenges encountered while building the app:
 
 ## Open-source libraries used
 
-- [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
-- [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
+- [Retrofit](https://github.com/square/retrofit) - Type-safe HTTP client for Android and Java by Square, Inc.
+- [Gson](https://github.com/google/gson) - A Java serialization/deserialization library that can convert Java Objects into JSON and back.
+- [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
+- [Glide Transformations](https://github.com/wasabeef/glide-transformations) - An Android transformation library providing a variety of image transformations for Glide.
+- [AndroidStaggeredGrid](https://github.com/etsy/AndroidStaggeredGrid) - An Android staggered grid view which supports multiple columns with rows of varying sizes.
 
 ## License
 
